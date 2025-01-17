@@ -1,0 +1,94 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #707070;
+}
+
+header {
+    background-color: #f8edb1;
+    color: rgb(0, 0, 0);
+    padding: 1rem 0;
+    text-align: center;
+}
+
+main {
+    margin: 20px;
+}
+
+section#menu {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+section#menu button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #215721;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+section#menu button:hover {
+    background-color: #1f571d;
+}
+
+#conteudo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table, th, td {
+    border: 1px solid #000000;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #2e5834;
+    color: rgb(0, 0, 0);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+form input {
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 10px;
+    background-color: #33532f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #8db8e9;
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Cadastro de Livros</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Sistema de Cadastro de Livros</h1>
+    </header>
+    <main>
+        <section id="menu">
+            <h2>Menu</h2>
+            <button onclick="listarLivros()">Listar Livros</button>
+            <button onclick="exibirFormulario('adicionar')">Adicionar Livro</button>
+            <button onclick="exibirFormulario('atualizar')">Atualizar Livro</button>
+            <button onclick="exibirFormulario('excluir')">Excluir Livro</button>
+        </section>
+
+        <section id="conteudo">
+            <div id="lista-livros" style="display: none;">
+                <h2>Lista de Livros</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Autor</th>
+                            <th>Gênero</th>
+                            <th>Ano</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-livros">
+                        <!-- Conteúdo dinâmico -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="formulario" style="display: none;">
+                <h2 id="form-titulo">Adicionar Livro</h2>
+                <form id="form-livro" onsubmit="handleFormSubmit(event)">
+                    <label for="titulo">Título:</label>
+                    <input type="text" id="titulo" name="titulo" required>
+
+                    <label for="autor">Autor:</label>
+                    <input type="text" id="autor" name="autor" required>
+
+                    <label for="genero">Gênero:</label>
+                    <input type="text" id="genero" name="genero" required>
+
+                    <label for="ano">Ano de Publicação:</label>
+                    <input type="number" id="ano" name="ano" required>
+
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API_URL = "http://localhost:3000/api/livros";
+        let currentAction = "adicionar";
+
+        async function listarLivros() {
+            const listaLivrosDiv = document.getElementById("lista-livros");
+            const tabelaLivros = document.getElementById("tabela-livros");
+            const formularioDiv = document.getElementById("formulario");
+
+            formularioDiv.style.display = "none";
+            listaLivrosDiv.style.display = "block";
+
+            try {
+                const response = await fetch(API_URL);
+                const livros = await response.json();
+                tabelaLivros.innerHTML = "";
+
+                livros.forEach(livro => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${livro.id}</td>
+                        <td>${livro.titulo}</td>
+                        <td>${livro.autor}</td>
+                        <td>${livro.genero}</td>
+                        <td>${livro.ano}</td>
+                    `;
+                    tabelaLivros.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Erro ao listar livros:", error);
+                alert("Erro ao listar os livros.");
+            }
+        }
+
+        function exibirFormulario(acao) {
+            currentAction = acao;
+            const formularioDiv = document.getElementById("formulario");
+            const listaLivrosDiv = document.getElementById("lista-livros");
+            const formTitulo = document.getElementById("form-titulo");
+
+            formularioDiv.style.display = "block";
+            listaLivrosDiv.style.display = "none";
+
+            if (acao === "adicionar") {
+                formTitulo.textContent = "Adicionar Livro";
+            } else if (acao === "atualizar") {
+                formTitulo.textContent = "Atualizar Livro (Informe o ID)";
+            } else if (acao === "excluir") {
+                formTitulo.textContent = "Excluir Livro (Informe o ID apenas)";
+            }
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const titulo = document.getElementById("titulo").value;
+            const autor = document.getElementById("autor").value;
+            const genero = document.getElementById("genero").value;
+            const ano = document.getElementById("ano").value;
+
+            if (currentAction === "adicionar") {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ titulo, autor, genero, ano })
+                    });
+
+                    if (response.ok) {
+                        alert("Livro adicionado com sucesso!");
+                        listarLivros();
+                    } else {
+                        alert("Erro ao adicionar o livro.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao adicionar livro:", error);
+                }
+            } else if (currentAction === "atualizar") {
+                const id = prompt("Informe o ID do livro que deseja atualizar:");
+                try {
+                    const response = await fetch(`${API_URL}/${id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ titulo, autor, genero, ano })
+                    });
+
+                    if (response.ok) {
+                        alert("Livro atualizado com sucesso!");
+                        listarLivros();
+                    } else {
+                        alert("Erro ao atualizar o livro.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao atualizar livro:", error);
+                }
+            } else if (currentAction === "excluir") {
+                const id = prompt("Informe o ID do livro que deseja excluir:");
+                try {
+                    const response = await fetch(`${API_URL}/${id}`, {
+                        method: "DELETE"
+                    });
+
+                    if (response.ok) {
+                        alert("Livro excluído com sucesso!");
+                        listarLivros();
+                    } else {
+                        alert("Erro ao excluir o livro.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao excluir livro:", error);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
